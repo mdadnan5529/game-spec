@@ -105,6 +105,15 @@ func main() {
 		json.NewEncoder(w).Encode(gameList)
 	})
 
+	// Handler for serving the index.html file
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Path != "/" {
+			http.NotFound(w, r)
+			return
+		}
+		http.ServeFile(w, r, "index.html")
+	})
+
 	log.Printf("serving http://%s", *httpAddr)
 	log.Fatal(http.ListenAndServe(*httpAddr, nil))
 }
