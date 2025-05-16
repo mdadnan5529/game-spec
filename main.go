@@ -31,7 +31,7 @@ func main() {
 	// Simple in-memory storage
 	hardwareList := []Hardware{}
 	gameList := []Game{}
-	var mu sync.Mutex // Mutex for protecting access to hardwareList and gameList
+	var mu sync.RWMutex // RWMutex for protecting access to hardwareList and gameList
 
 	// Handler for adding new hardware
 	http.HandleFunc("/add-hardware", func(w http.ResponseWriter, r *http.Request) {
