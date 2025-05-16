@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gaming Inventory</title>
+</head>
+<body>
+    <h1>Gaming Inventory</h1>
+
+    <h2>Add Hardware</h2>
+    <form id="addHardwareForm">
+        <label for="hardwareType">Type:</label><br>
+        <input type="text" id="hardwareType" name="type"><br>
+        <label for="hardwareName">Name:</label><br>
+        <input type="text" id="hardwareName" name="name"><br>
+        <label for="hardwareSpecs">Specifications:</label><br>
+        <input type="text" id="hardwareSpecs" name="specifications"><br><br>
+        <button type="submit">Add Hardware</button>
+    </form>
+
+    <h2>Add Game</h2>
+    <form id="addGameForm">
+        <label for="gameTitle">Title:</label><br>
+        <input type="text" id="gameTitle" name="title"><br>
+        <label for="gamePlatform">Platform:</label><br>
+        <input type="text" id="gamePlatform" name="platform"><br><br>
+        <button type="submit">Add Game</button>
+    </form>
+
+    <h2>Hardware</h2>
+    <ul id="hardwareList">
+        <!-- Hardware items will be added here by JavaScript -->
+    </ul>
+
+    <h2>Games</h2>
+    <ul id="gameList">
+        <!-- Game items will be added here by JavaScript -->
+    </ul>
+
+    <script>
+        document.getElementById('addHardwareForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const type = document.getElementById('hardwareType').value;
+            const name = document.getElementById('hardwareName').value;
+            const specifications = document.getElementById('hardwareSpecs').value;
+
+            const response = await fetch('/add_hardware', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ type, name, specifications }),
+            });
+
+            if (response.ok) {
+                document.getElementById('hardwareType').value = '';
+                document.getElementById('hardwareName').value = '';
+                document.getElementById('hardwareSpecs').value = '';
+                fetchInventory(); // Refresh the lists
+            }
+        });
+
+        document.getElementById('addGameForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const title = document.getElementById('gameTitle').value;
+            const platform = document.getElementById('gamePlatform').value;
+
+            const response = await fetch('/add_game', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ title, platform }),
+            });
+
+            if (response.ok) {
+                document.getElementById('gameTitle').value = '';
+                document.getElementById('gamePlatform').value = '';
+                fetchInventory(); // Refresh the lists
+            }
+        });
+
+        async function fetchInventory() {
+            const hardwareResponse = await fetch('/hardware');
+            const hardware = await hardwareResponse.json();
+            const hardwareList = document.getElementById('hardwareList');
+            hardwareList.innerHTML = '';
+            hardware.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.name} (${item.type}, ${item.specifications})`;
+                hardwareList.appendChild(li);
+            });
+
+            const gamesResponse = await fetch('/games');
+            const games = await gamesResponse.json();
+            const gameList = document.getElementById('gameList');
+            gameList.innerHTML = '';
+            games.forEach(item => {
+                const li = document.createElement('li');
+                li.textContent = `${item.title} (${item.platform})`;
+                gameList.appendChild(li);
+            });
+        }
+
+        // Fetch and display inventory when the page loads
+        fetchInventory();
+
+    </script>
+</body>
+</html>
