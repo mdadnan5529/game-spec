@@ -66,7 +66,7 @@
             const name = document.getElementById('hardwareName').value;
             const specifications = document.getElementById('hardwareSpecs').value;
 
-            const response = await fetch('/add_hardware', {
+            const response = await fetch('/add-hardware', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -87,7 +87,7 @@
             const title = document.getElementById('gameTitle').value;
             const platform = document.getElementById('gamePlatform').value;
 
-            const response = await fetch('/add_game', {
+            const response = await fetch('/add-game', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
